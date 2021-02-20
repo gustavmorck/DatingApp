@@ -2,6 +2,8 @@ import { AccountService } from './../_services/account.service';
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { User } from '../_models/user';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-nav',
@@ -15,7 +17,7 @@ export class NavComponent implements OnInit {
   //This is just to declare the variable and make it available for the Init
   //currentUser$: Observable<User>; we can reach for it directly from the service instead by setting it to public!
   
-  constructor(public accountService: AccountService) { }
+  constructor(public accountService: AccountService, private router: Router, private toastr: ToastrService) { }
 
   ngOnInit(): void {
     
@@ -27,13 +29,15 @@ export class NavComponent implements OnInit {
   //Notice that this is only used if the user must actually log in!
   login() {
     this.accountService.login(this.model).subscribe(response => {
-      console.log(response);      
+      this.router.navigateByUrl('/members');
     }, error => {
       console.log(error);
+      this.toastr.error(error.error);
     })
   }
 
   logout() {
     this.accountService.logout();
+    this.router.navigateByUrl('/');
   }
 }
